@@ -1,1 +1,2 @@
-# Caribbean-Stud-Poker
+Caribbean Stud Poker
+Alexander Lako

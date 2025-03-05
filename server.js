@@ -74,7 +74,22 @@ function printPlayerHand(){
 //Print the house hand
 function printHouseHand(){
     for(let i = 0; i < 5; i++){
-        console.log(houseHand[i].getValue(), houseHand[i].getSuit());
+        let cardValue = houseHand[i].getValue();
+        //print 1,11,12,13 as A,K,Q,J
+        switch(houseHand[i].getValue()){
+            case 1:
+                cardValue = "A";
+                break;
+            case 11:
+                cardValue = "J";
+                break;
+            case 12:
+                cardValue = "Q";;
+                break;
+            case 13:
+                cardValue = "K"
+        }
+        console.log(cardValue, houseHand[i].getSuit());
     }
 }
 
@@ -92,6 +107,7 @@ function calculateHandStrength(hand){
     
     let dict = {"Hearts":[0], "Diamonds":[0], "Spades":[0], "Clubs":[0]};
 
+        //Increase dict card value by 1, or add it to the dict
         for(let i = 0; i < 5; i++){
             if(dict[hand[i].getValue()] == undefined){
                 dict[hand[i].getValue()] = [1];
@@ -100,6 +116,7 @@ function calculateHandStrength(hand){
                 dict[hand[i].getValue()][0] += 1;
             }
 
+            //If card is a suit, increase said suit
             switch(hand[i].getSuit()){
                 case "H":
                     dict["Hearts"][0] += 1
@@ -118,46 +135,45 @@ function calculateHandStrength(hand){
 
     if(isRoyalFlush(dict)){
         console.log("Player has a Royal Flush");
-        return;
+        return 23;
     }   
     else if(isStraightFlush(dict)){
         console.log("Player has straight flush");
-        return;
+        return 22;
     }
     else if(isQuads(dict)){
         console.log("Player has four of a kind / quads");
-        //return;
+        return 21;
     }
     else if(isFullHouse(dict)){
         console.log("Player has Full House");
-        return;
+        return 20;
     }
     else if(isFlush(dict)){
         console.log("Player has a flush");
-        //return;
+        return 19;
     }
     else if(isStraight(dict)){
         console.log("Player has a straight");
-        return;
+        return 18;
     }
     else if(isThreeKind(dict)){
         console.log("Player has three of a kind");
-        return;
+        return 17;
     }    
     else if(isTwoPair(dict)){
         console.log("Player has two pair");
-        return;
+        return 16;
     }
     else if(isPair(dict)){
         console.log("Player has pair");
-        return;
+        return 15;
     }  
     else{
-        console.log("Player has nothing!");
-        //return;
+        console.log("Player has high card");
+        if(Object.keys(dict)[0] == 1){return 14;}
+        else{return Object.keys(dict)[Object.keys(dict).length-5];}
     }
-        
-        
         // let dict = new Map();
         // dict.set('Heart', 0);
         // dict.set('Diamond', 0);
@@ -173,40 +189,17 @@ function calculateHandStrength(hand){
 
         // console.log(dict.get('two'));
 
-
-
-
-
-        
-
-        console.log(dict);
-
-        console.log(Object.keys(dict).length);
-
         // for(var key in dict){
         //     console.log(key);
         // }
+}
 
-        // if(dict["Hearts"] == 5 || dict["Diamonds"] == 5 || dict["Spades"] == 5 || dict["Clubs"] == 5){
-        //     console.log("Player has a flush!");
-        // }
-
-    
-        //Count suit amount
-        //Count number of times number occurs
-
-        //Organize the numbers from smallest to largest?
-        
-        
-        
-        
-        
-    }
-
+//rigDeck takes value, suit, and deck position then switches the current card in position with the desired one
 function rigDeck(value, suit, position){
     for(let i = 0; i < deck.length; i++){
         let existingCard = new card(deck[position].getValue(), deck[position].getSuit());
 
+        //If we found our card, swap it with the one in our desired position, then assign our card to position
         if(deck[i].getSuit() == suit && deck[i].getValue() == value){
             let myCard = new card(deck[i].getValue(), deck[i].getSuit());
             deck[position] = myCard;
@@ -216,57 +209,116 @@ function rigDeck(value, suit, position){
     }
 }
 
+//Check that cards are 10,J,Q,K,A all of the same suit
 function isRoyalFlush(dict){
-    return false;
+        
+    return (Object.keys(dict)[4] == 13 && 
+    Object.keys(dict)[3] == 12 && 
+    Object.keys(dict)[2] == 11 && 
+    Object.keys(dict)[1] == 10 && 
+    Object.keys(dict)[0] == 1 &&
+    isFlush(dict));
 }
 
+//If cards are both straight and flush, then we have straight flush
 function isStraightFlush(dict){
-    return false;
+    return (isFlush(dict) && isStraight(dict));
 }
 
+//Check to see if we got 4 cards of the same value
 function isQuads(dict){
     for(let i = Object.keys(dict).length-4; i > 0; i--){
-        console.log("i: ", i);
-        console.log(Object.keys(dict)[i-1])
-        if(Object.keys(dict)[i-1][0] == 4){
+        if(dict[Object.keys(dict)[i-1]] == 4){
             return true;
         }
     }
     return false;
 }
 
+//Check to see if we have both three of a kind and a pair
 function isFullHouse(dict){
-    return false;
+    let sameThree = false;
+    let sameTwo = false;
+    for(let i = Object.keys(dict).length-4; i > 0; i--){
+        if(dict[Object.keys(dict)[i-1]] == 3){
+            sameThree = true;
+        }
+        else if(dict[Object.keys(dict)[i-1]] == 2){
+            sameTwo = true;
+        }
+    }
+    return (sameThree && sameTwo);
 }
 
+//Check to see if all cards are of the same suit
 function isFlush(dict){
-    if(dict["Hearts"] == 5 || dict["Diamonds"] == 5 || dict["Spades"] == 5 || dict["Clubs"] == 5)
-        return true;
+    return (dict["Hearts"] == 5 || dict["Diamonds"] == 5 || dict["Spades"] == 5 || dict["Clubs"] == 5);
 }
 
+//Check and see if we have a straight
 function isStraight(dict){
-    return false;
+
+    //This is the case of the Ace high straight that is not a royal flush
+    if(Object.keys(dict)[4] == 13 && 
+    Object.keys(dict)[3] == 12 && 
+    Object.keys(dict)[2] == 11 && 
+    Object.keys(dict)[1] == 10 && 
+    Object.keys(dict)[0] == 1){
+        return true;
+    }
+
+    for(let i = 0; i < 4; i++){
+        if(parseInt(Object.keys(dict)[i])+1 != parseInt(Object.keys(dict)[i+1])){
+            return false;
+        }
+    }
+    return true;
 }
 
+//Check to see if we have 3 cards of the same value
 function isThreeKind(dict){
+    for(let i = Object.keys(dict).length-4; i > 0; i--){
+        if(dict[Object.keys(dict)[i-1]] == 3){
+            return true;
+        }
+    }
     return false;
 }
 
+//Check and see if we have two pairs
 function isTwoPair(dict){
+    let pairCounter = 0;
+    for(let i = Object.keys(dict).length-4; i > 0; i--){
+        if(dict[Object.keys(dict)[i-1]] == 2){
+            pairCounter++;
+        }
+    }
+
+    if(pairCounter == 2)
+        return true;
+
     return false;
 }
 
+//Check to see if we have a pair
 function isPair(dict){
+    for(let i = Object.keys(dict).length-4; i > 0; i--){
+        if(dict[Object.keys(dict)[i-1]] == 2){
+            return true;
+        }
+    }
     return false;
 }
 
 initDeck();
-rigDeck(1, "H", 0);
-rigDeck(1, "D", 2);
-rigDeck(1, "C", 4);
-rigDeck(1, "S", 6);
-rigDeck(5, "H", 8);
+ rigDeck(2, "H", 0);
+ rigDeck(2, "S", 2);
+ rigDeck(2, "C", 4);
+ rigDeck(3, "H", 6);
+ rigDeck(3, "C", 8);
 
 initHands();
-calculateHandStrength(playerHand);
+let strength = calculateHandStrength(playerHand);
 printPlayerHand();
+//console.log(dict);
+console.log("Strength: ", strength);

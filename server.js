@@ -3,7 +3,7 @@ const deck = [];
 const playerHand = [];
 const houseHand = [];
 let betAmount = 0;
-let totalMoney = 0;
+let totalMoney = 1000;
 
 //Card object has a value and suit
 function card(value, suit){
@@ -50,11 +50,11 @@ function initHands(){
 }
 
 //Print the player hand
-function printPlayerHand(){
+function printHand(hand){
     for(let i = 0; i < 5; i++){
-        let cardValue = playerHand[i].getValue();
+        let cardValue = hand[i].getValue();
         //print 1,11,12,13 as A,K,Q,J
-        switch(playerHand[i].getValue()){
+        switch(hand[i].getValue()){
             case 1:
                 cardValue = "A";
                 break;
@@ -67,29 +67,7 @@ function printPlayerHand(){
             case 13:
                 cardValue = "K"
         }
-        console.log(cardValue, playerHand[i].getSuit());
-    }
-}
-
-//Print the house hand
-function printHouseHand(){
-    for(let i = 0; i < 5; i++){
-        let cardValue = houseHand[i].getValue();
-        //print 1,11,12,13 as A,K,Q,J
-        switch(houseHand[i].getValue()){
-            case 1:
-                cardValue = "A";
-                break;
-            case 11:
-                cardValue = "J";
-                break;
-            case 12:
-                cardValue = "Q";;
-                break;
-            case 13:
-                cardValue = "K"
-        }
-        console.log(cardValue, houseHand[i].getSuit());
+        console.log(cardValue, hand[i].getSuit());
     }
 }
 
@@ -103,6 +81,7 @@ function shuffleDeck() {
     }
 }
 
+//Calculate a hands strength by using a dictionary then return the hands strength
 function calculateHandStrength(hand){
     
     let dict = {"Hearts":[0], "Diamonds":[0], "Spades":[0], "Clubs":[0]};
@@ -133,44 +112,36 @@ function calculateHandStrength(hand){
             }
         }
 
+    //Returns the strength by checking if the cards create a poker hand
     if(isRoyalFlush(dict)){
-        console.log("Player has a Royal Flush");
         return 23;
     }   
     else if(isStraightFlush(dict)){
-        console.log("Player has straight flush");
         return 22;
     }
     else if(isQuads(dict)){
-        console.log("Player has four of a kind / quads");
         return 21;
     }
     else if(isFullHouse(dict)){
-        console.log("Player has Full House");
         return 20;
     }
     else if(isFlush(dict)){
-        console.log("Player has a flush");
         return 19;
     }
     else if(isStraight(dict)){
-        console.log("Player has a straight");
         return 18;
     }
     else if(isThreeKind(dict)){
-        console.log("Player has three of a kind");
         return 17;
     }    
     else if(isTwoPair(dict)){
-        console.log("Player has two pair");
         return 16;
     }
     else if(isPair(dict)){
-        console.log("Player has pair");
         return 15;
     }  
     else{
-        console.log("Player has high card");
+        //Return the highest card as its strength
         if(Object.keys(dict)[0] == 1){return 14;}
         else{return Object.keys(dict)[Object.keys(dict).length-5];}
     }
@@ -211,7 +182,6 @@ function rigDeck(value, suit, position){
 
 //Check that cards are 10,J,Q,K,A all of the same suit
 function isRoyalFlush(dict){
-        
     return (Object.keys(dict)[4] == 13 && 
     Object.keys(dict)[3] == 12 && 
     Object.keys(dict)[2] == 11 && 
@@ -310,15 +280,72 @@ function isPair(dict){
     return false;
 }
 
+//Based on player strength, see who wins
+function calculateWinner(){
+    if(calculateHandStrength(playerHand) > calculateHandStrength(houseHand)){
+        console.log("Player Wins!");
+    }
+    else if(calculateHandStrength(playerHand) == calculateHandStrength(houseHand)){
+        console.log("Its a tie!");
+    }
+    else if(calculateHandStrength(playerHand) < calculateHandStrength(houseHand)){
+        console.log("Dealer Wins!");
+    }
+}
+
+function unsure(name, strength){
+    switch(strength){
+        case 23:
+            console.log(name, " has a Royal Flush!");
+            break;
+        case 22:
+            console.log(name, " has a Straight Flush!");
+            break;
+        case 21:
+            console.log(name, " has Quads!");
+            break;
+        case 20:
+            console.log(name, " has a Full House");
+            break;
+        case 19:
+            console.log(name, " has a Flush");
+            break;
+        case 18:
+            console.log(name, " has a Straight");
+            break;
+        case 17:
+            console.log( name, " has Three of a kind");
+            break;
+        case 16:
+            console.log(name, " has Two Pair");
+            break;
+        case 15:
+            console.log(name, " has a Pair");
+            break;
+        default:
+            console.log(name, " has a High Card: ");
+            break;
+    }
+}
+
+
 initDeck();
- rigDeck(2, "H", 0);
- rigDeck(2, "S", 2);
- rigDeck(2, "C", 4);
- rigDeck(3, "H", 6);
- rigDeck(3, "C", 8);
+//  rigDeck(2, "H", 0);
+//  rigDeck(2, "S", 2);
+//  rigDeck(2, "C", 4);
+//  rigDeck(3, "H", 6);
+//  rigDeck(3, "C", 8);
 
 initHands();
-let strength = calculateHandStrength(playerHand);
-printPlayerHand();
+let playerStrength = calculateHandStrength(playerHand);
+let houseStrength = calculateHandStrength(houseHand);
+console.log("Player Hand: --------------------");
+printHand(playerHand);
+console.log("House Hand: --------------------");
+printHand(houseHand);
 //console.log(dict);
-console.log("Strength: ", strength);
+console.log("Player Strength: ", playerStrength);
+unsure("Player", playerStrength);
+console.log("House Strength: ", houseStrength);
+unsure("House", houseStrength);
+calculateWinner();

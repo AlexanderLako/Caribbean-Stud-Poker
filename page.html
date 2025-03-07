@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caribbean Stud Poker</title>
+    <style>
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Caribbean Stud Poker</h1>
+    </header>
+
+
+    <!-- Main Content Section -->
+    <div class="content">
+        <label id="balance"> Balance: </label><br>
+        <label>Enter Bet Amount: </label>
+        <input
+            type="text"
+            id="betAmount"
+            name="betAmount"
+            required
+            minlength="1"
+            maxlength="8"
+            size="10" />
+            <button name = "Deal" onclick = initHands()> Deal </button><br><br><br>
+            <label id="PCard1">P Card 1</label><br>
+            <label id="PCard2">P Card 2</label><br>
+            <label id="PCard3">P Card 3</label><br>
+            <label id="PCard4">P Card 4</label><br>
+            <label id="PCard5">P Card 5</label><br><br><br>
+
+            <label id="HCard1">H Card 1</label><br>
+            <label id="HCard2">H Card 2</label><br>
+            <label id="HCard3">H Card 3</label><br>
+            <label id="HCard4">H Card 4</label><br>
+            <label id="HCard5">H Card 5</label><br><br><br>
+    </div>
+
+    <script src = server.js></script>
+
+</body>
+</html>

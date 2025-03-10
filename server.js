@@ -1,9 +1,10 @@
 
-const deck = [];
-const playerHand = [];
-const houseHand = [];
+let deck = [];
+let playerHand = [];
+let houseHand = [];
 let betAmount = 0;
 let totalMoney = 1000;
+document.getElementById('balance').innerHTML = ('Balance: $' + totalMoney);
 
 //Card object has a value and suit
 function card(value, suit){
@@ -19,10 +20,29 @@ function card(value, suit){
     this.getSuit = function(){
         return s;
     };
+
+    //Return the letter value if its J, Q, K, A
+    this.getLetterValue = function(){
+        switch(value){
+            case 1:
+                return "A";
+            case 11:
+                return "J";
+            case 12:
+                return "Q";
+            case 13:
+                return "K";
+            default:
+                return value;
+        }  
+    };
 }
 
 //Create cards and add them to deck
 function initDeck(){
+
+    //Set deck to empty
+    deck = [];
 
     //Create cards from A(1)-K(13) for each suit and add to deck
     for(let i = 1; i <= 13; i++){
@@ -43,6 +63,11 @@ function initDeck(){
 //Give the player and dealer 5 cards from the deck
 function initHands(){
 
+    //Sets hands to empty
+    playerHand = [];
+    houseHand = [];
+
+    //Give player and house 5 cards each from the front of the deck
     for(let i = 0; i < 5; i++){
         let playerCard = deck.shift(); playerHand.push(playerCard);
         let houseCard = deck.shift(); houseHand.push(houseCard);
@@ -52,22 +77,30 @@ function initHands(){
 //Print the player hand
 function printHand(hand){
     for(let i = 0; i < 5; i++){
-        let cardValue = hand[i].getValue();
-        //print 1,11,12,13 as A,K,Q,J
-        switch(hand[i].getValue()){
-            case 1:
-                cardValue = "A";
-                break;
-            case 11:
-                cardValue = "J";
-                break;
-            case 12:
-                cardValue = "Q";;
-                break;
-            case 13:
-                cardValue = "K"
-        }
-        console.log(cardValue, hand[i].getSuit());
+        console.log(hand[i].getLetterValue(), hand[i].getSuit());
+    }
+}
+
+function initialDisplay(){
+    for(let i = 0; i < 5; i++){
+        let labelTag = 'PCard' + [i+1];
+        document.getElementById(labelTag).innerHTML = (playerHand[i].getLetterValue() + playerHand[i].getSuit());
+    } 
+    document.getElementById('HCard1').innerHTML = (houseHand[0].getLetterValue() + houseHand[0].getSuit());
+}
+
+function bet(){
+    printRemainingHouse();
+}
+
+function fold(){
+    printRemainingHouse();
+}
+
+function printRemainingHouse(){
+    for(let i = 1; i < 5; i++){
+        let labelTag = 'HCard' + [i+1];
+        document.getElementById(labelTag).innerHTML = (houseHand[i].getLetterValue() + houseHand[i].getSuit());
     }
 }
 
@@ -113,33 +146,15 @@ function calculateHandStrength(hand){
         }
 
     //Returns the strength by checking if the cards create a poker hand
-    if(isRoyalFlush(dict)){
-        return 23;
-    }   
-    else if(isStraightFlush(dict)){
-        return 22;
-    }
-    else if(isQuads(dict)){
-        return 21;
-    }
-    else if(isFullHouse(dict)){
-        return 20;
-    }
-    else if(isFlush(dict)){
-        return 19;
-    }
-    else if(isStraight(dict)){
-        return 18;
-    }
-    else if(isThreeKind(dict)){
-        return 17;
-    }    
-    else if(isTwoPair(dict)){
-        return 16;
-    }
-    else if(isPair(dict)){
-        return 15;
-    }  
+    if(isRoyalFlush(dict)) return 23;
+    else if(isStraightFlush(dict)) return 22;
+    else if(isQuads(dict)) return 21;
+    else if(isFullHouse(dict)) return 20;
+    else if(isFlush(dict)) return 19;
+    else if(isStraight(dict)) return 18;
+    else if(isThreeKind(dict)) return 17; 
+    else if(isTwoPair(dict)) return 16;
+    else if(isPair(dict)) return 15;  
     else{
         //Return the highest card as its strength
         if(Object.keys(dict)[0] == 1){return 14;}
@@ -263,11 +278,7 @@ function isTwoPair(dict){
             pairCounter++;
         }
     }
-
-    if(pairCounter == 2)
-        return true;
-
-    return false;
+    return (pairCounter == 2);
 }
 
 //Check to see if we have a pair
@@ -282,70 +293,83 @@ function isPair(dict){
 
 //Based on player strength, see who wins
 function calculateWinner(){
-    if(calculateHandStrength(playerHand) > calculateHandStrength(houseHand)){
+    if(calculateHandStrength(playerHand) > calculateHandStrength(houseHand))
         console.log("Player Wins!");
-    }
-    else if(calculateHandStrength(playerHand) == calculateHandStrength(houseHand)){
+    else if(calculateHandStrength(playerHand) == calculateHandStrength(houseHand))
         console.log("Its a tie!");
-    }
-    else if(calculateHandStrength(playerHand) < calculateHandStrength(houseHand)){
+    else if(calculateHandStrength(playerHand) < calculateHandStrength(houseHand))
         console.log("Dealer Wins!");
-    }
 }
 
-function unsure(name, strength){
+function printStrength(name, strength){
+    let elementId = name.toLowerCase() + 'Strength';
     switch(strength){
         case 23:
-            console.log(name, " has a Royal Flush!");
+            document.getElementById(elementId).innerHTML = (name + " has a Royal Flush!");
             break;
         case 22:
-            console.log(name, " has a Straight Flush!");
+            document.getElementById(elementId).innerHTML = (name + " has a Straight Flush!");
             break;
         case 21:
-            console.log(name, " has Quads!");
+            document.getElementById(elementId).innerHTML = (name + " has Quads!");
             break;
         case 20:
-            console.log(name, " has a Full House");
+            document.getElementById(elementId).innerHTML = (name + " has a Full House!");
             break;
         case 19:
-            console.log(name, " has a Flush");
+            document.getElementById(elementId).innerHTML = (name + " has a Flush!");
             break;
         case 18:
-            console.log(name, " has a Straight");
+            document.getElementById(elementId).innerHTML = (name + " has a Straight!");
             break;
         case 17:
-            console.log( name, " has Three of a kind");
+            document.getElementById(elementId).innerHTML = (name + " has Three of a kind!");
             break;
         case 16:
-            console.log(name, " has Two Pair");
+            document.getElementById(elementId).innerHTML = (name + " has Two Pair!");
             break;
         case 15:
-            console.log(name, " has a Pair");
+            document.getElementById(elementId).innerHTML = (name + " has a Pair!");
             break;
         default:
-            console.log(name, " has a High Card: ");
+            document.getElementById(elementId).innerHTML = (name + " has a High Card: ");
             break;
     }
 }
 
+function deal(){
+    initDeck();
+    initHands();
+    initialDisplay();
+    printStrength('Player', calculateHandStrength(playerHand));
 
-initDeck();
+    document.getElementById('HCard2').innerHTML = "HCard2";
+    document.getElementById('HCard3').innerHTML = "HCard3";
+    document.getElementById('HCard4').innerHTML = "HCard4";
+    document.getElementById('HCard5').innerHTML = "HCard5";
+
+    printStrength('House', calculateHandStrength(houseHand));
+}
+
+
+// initDeck();
 //  rigDeck(2, "H", 0);
 //  rigDeck(2, "S", 2);
 //  rigDeck(2, "C", 4);
 //  rigDeck(3, "H", 6);
 //  rigDeck(3, "C", 8);
 
-initHands();
-let playerStrength = calculateHandStrength(playerHand);
-let houseStrength = calculateHandStrength(houseHand);
-console.log("Player Hand: --------------------");
-printHand(playerHand);
-console.log("House Hand: --------------------");
-printHand(houseHand);
-//console.log(dict);
-console.log("Player Strength: ", playerStrength);
-unsure("Player", playerStrength);
-console.log("House Strength: ", houseStrength);
-unsure("House", houseStrength);
-calculateWinner();
+// initHands();
+// initialDisplay();
+// let playerStrength = calculateHandStrength(playerHand);
+// let houseStrength = calculateHandStrength(houseHand);
+// console.log("Player Hand: --------------------");
+// printHand(playerHand);
+// console.log("House Hand: --------------------");
+// printHand(houseHand);
+// //console.log(dict);
+// console.log("Player Strength: ", playerStrength);
+// unsure("Player", playerStrength);
+// console.log("House Strength: ", houseStrength);
+// unsure("House", houseStrength);
+// calculateWinner();

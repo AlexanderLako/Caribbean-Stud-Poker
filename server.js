@@ -5,6 +5,9 @@ let houseHand = [];
 let betAmount = 0;
 let totalMoney = 1000;
 document.getElementById('balance').innerHTML = ('Balance: $' + totalMoney);
+document.getElementById('fold').disabled = true;
+document.getElementById('bet').disabled = true;
+document.getElementById('deal').disabled = false;
 
 //Card object has a value and suit
 function card(value, suit){
@@ -90,11 +93,25 @@ function initialDisplay(){
 }
 
 function bet(){
+    document.getElementById('fold').disabled = true;
+    document.getElementById('bet').disabled = true;
+    document.getElementById('deal').disabled = false;
+
+    printStrength('House', calculateHandStrength(houseHand));
+
     printRemainingHouse();
+    calculateWinner();
 }
 
 function fold(){
+    document.getElementById('fold').disabled = true;
+    document.getElementById('bet').disabled = true;
+    document.getElementById('deal').disabled = false;
+
+    printStrength('House', calculateHandStrength(houseHand));
+
     printRemainingHouse();
+    calculateWinner();
 }
 
 function printRemainingHouse(){
@@ -294,11 +311,11 @@ function isPair(dict){
 //Based on player strength, see who wins
 function calculateWinner(){
     if(calculateHandStrength(playerHand) > calculateHandStrength(houseHand))
-        console.log("Player Wins!");
+        document.getElementById('winner').innerHTML = ("Player Wins!");
     else if(calculateHandStrength(playerHand) == calculateHandStrength(houseHand))
-        console.log("Its a tie!");
+        document.getElementById('winner').innerHTML = ("Its a tie!");
     else if(calculateHandStrength(playerHand) < calculateHandStrength(houseHand))
-        console.log("Dealer Wins!");
+        document.getElementById('winner').innerHTML = ("Dealer Wins!");
 }
 
 function printStrength(name, strength){
@@ -332,7 +349,7 @@ function printStrength(name, strength){
             document.getElementById(elementId).innerHTML = (name + " has a Pair!");
             break;
         default:
-            document.getElementById(elementId).innerHTML = (name + " has a High Card: ");
+            document.getElementById(elementId).innerHTML = (name + " has a High Card: " + strength);
             break;
     }
 }
@@ -347,8 +364,9 @@ function deal(){
     document.getElementById('HCard3').innerHTML = "HCard3";
     document.getElementById('HCard4').innerHTML = "HCard4";
     document.getElementById('HCard5').innerHTML = "HCard5";
-
-    printStrength('House', calculateHandStrength(houseHand));
+    document.getElementById('bet').disabled = false;
+    document.getElementById('fold').disabled = false;
+    document.getElementById('deal').disabled = true;
 }
 
 

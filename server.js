@@ -63,6 +63,31 @@ function initDeck(){
     shuffleDeck();
 }
 
+//rigDeck takes value, suit, and deck position then switches the current card in position with the desired one
+function rigDeck(value, suit, position){
+    for(let i = 0; i < deck.length; i++){
+        let existingCard = new card(deck[position].getValue(), deck[position].getSuit());
+
+        //If we found our card, swap it with the one in our desired position, then assign our card to position
+        if(deck[i].getSuit() == suit && deck[i].getValue() == value){
+            let myCard = new card(deck[i].getValue(), deck[i].getSuit());
+            deck[position] = myCard;
+            deck[i] = existingCard;
+            break;
+        }
+    }
+}
+
+//Shuffle deck using Fisher-Yates method
+function shuffleDeck() {
+    for (let i = deck.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        let k = deck[i];
+        deck[i] = deck[j];
+        deck[j] = k;
+    }
+}
+
 //Give the player and dealer 5 cards from the deck
 function initHands(){
 
@@ -74,60 +99,6 @@ function initHands(){
     for(let i = 0; i < 5; i++){
         let playerCard = deck.shift(); playerHand.push(playerCard);
         let houseCard = deck.shift(); houseHand.push(houseCard);
-    }
-}
-
-//Print the player hand
-function printHand(hand){
-    for(let i = 0; i < 5; i++){
-        console.log(hand[i].getLetterValue(), hand[i].getSuit());
-    }
-}
-
-function initialDisplay(){
-    for(let i = 0; i < 5; i++){
-        let labelTag = 'PCard' + [i+1];
-        document.getElementById(labelTag).innerHTML = (playerHand[i].getLetterValue() + playerHand[i].getSuit());
-    } 
-    document.getElementById('HCard1').innerHTML = (houseHand[0].getLetterValue() + houseHand[0].getSuit());
-}
-
-function bet(){
-    document.getElementById('fold').disabled = true;
-    document.getElementById('bet').disabled = true;
-    document.getElementById('deal').disabled = false;
-
-    printStrength('House', calculateHandStrength(houseHand));
-
-    printRemainingHouse();
-    calculateWinner();
-}
-
-function fold(){
-    document.getElementById('fold').disabled = true;
-    document.getElementById('bet').disabled = true;
-    document.getElementById('deal').disabled = false;
-
-    printStrength('House', calculateHandStrength(houseHand));
-
-    printRemainingHouse();
-    calculateWinner();
-}
-
-function printRemainingHouse(){
-    for(let i = 1; i < 5; i++){
-        let labelTag = 'HCard' + [i+1];
-        document.getElementById(labelTag).innerHTML = (houseHand[i].getLetterValue() + houseHand[i].getSuit());
-    }
-}
-
-//Shuffle deck using Fisher-Yates method
-function shuffleDeck() {
-    for (let i = deck.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        let k = deck[i];
-        deck[i] = deck[j];
-        deck[j] = k;
     }
 }
 
@@ -195,21 +166,6 @@ function calculateHandStrength(hand){
         // for(var key in dict){
         //     console.log(key);
         // }
-}
-
-//rigDeck takes value, suit, and deck position then switches the current card in position with the desired one
-function rigDeck(value, suit, position){
-    for(let i = 0; i < deck.length; i++){
-        let existingCard = new card(deck[position].getValue(), deck[position].getSuit());
-
-        //If we found our card, swap it with the one in our desired position, then assign our card to position
-        if(deck[i].getSuit() == suit && deck[i].getValue() == value){
-            let myCard = new card(deck[i].getValue(), deck[i].getSuit());
-            deck[position] = myCard;
-            deck[i] = existingCard;
-            break;
-        }
-    }
 }
 
 //Check that cards are 10,J,Q,K,A all of the same suit
@@ -308,16 +264,6 @@ function isPair(dict){
     return false;
 }
 
-//Based on player strength, see who wins
-function calculateWinner(){
-    if(calculateHandStrength(playerHand) > calculateHandStrength(houseHand))
-        document.getElementById('winner').innerHTML = ("Player Wins!");
-    else if(calculateHandStrength(playerHand) == calculateHandStrength(houseHand))
-        document.getElementById('winner').innerHTML = ("Its a tie!");
-    else if(calculateHandStrength(playerHand) < calculateHandStrength(houseHand))
-        document.getElementById('winner').innerHTML = ("Dealer Wins!");
-}
-
 function printStrength(name, strength){
     let elementId = name.toLowerCase() + 'Strength';
     switch(strength){
@@ -354,6 +300,32 @@ function printStrength(name, strength){
     }
 }
 
+//Based on player strength, see who wins
+function calculateWinner(){
+    if(calculateHandStrength(playerHand) > calculateHandStrength(houseHand))
+        document.getElementById('winner').innerHTML = ("Player Wins!");
+    else if(calculateHandStrength(playerHand) == calculateHandStrength(houseHand))
+        document.getElementById('winner').innerHTML = ("Its a tie!");
+    else if(calculateHandStrength(playerHand) < calculateHandStrength(houseHand))
+        document.getElementById('winner').innerHTML = ("Dealer Wins!");
+}
+
+function initialDisplay(){
+    for(let i = 0; i < 5; i++){
+        let labelTag = 'PCard' + [i+1];
+        document.getElementById(labelTag).innerHTML = (playerHand[i].getLetterValue() + playerHand[i].getSuit());
+    } 
+    document.getElementById('HCard1').innerHTML = (houseHand[0].getLetterValue() + houseHand[0].getSuit());
+}
+
+
+function printRemainingHouse(){
+    for(let i = 1; i < 5; i++){
+        let labelTag = 'HCard' + [i+1];
+        document.getElementById(labelTag).innerHTML = (houseHand[i].getLetterValue() + houseHand[i].getSuit());
+    }
+}
+
 function deal(){
     initDeck();
     initHands();
@@ -367,6 +339,28 @@ function deal(){
     document.getElementById('bet').disabled = false;
     document.getElementById('fold').disabled = false;
     document.getElementById('deal').disabled = true;
+}
+
+function bet(){
+    document.getElementById('fold').disabled = true;
+    document.getElementById('bet').disabled = true;
+    document.getElementById('deal').disabled = false;
+
+    printStrength('House', calculateHandStrength(houseHand));
+
+    printRemainingHouse();
+    calculateWinner();
+}
+
+function fold(){
+    document.getElementById('fold').disabled = true;
+    document.getElementById('bet').disabled = true;
+    document.getElementById('deal').disabled = false;
+
+    printStrength('House', calculateHandStrength(houseHand));
+
+    printRemainingHouse();
+    calculateWinner();
 }
 
 

@@ -324,16 +324,19 @@ function calculateWinner(){
 function initialDisplay(){
     for(let i = 0; i < 5; i++){
         let labelTag = 'PCard' + [i+1];
-        document.getElementById(labelTag).innerHTML = (playerHand[i].getLetterValue() + playerHand[i].getSuit());
+        let imageVal = playerHand[i].getLetterValue() + playerHand[i].getSuit()
+        document.getElementById(labelTag).src = "media/" + imageVal + ".png";
     } 
-    document.getElementById('HCard1').innerHTML = (houseHand[0].getLetterValue() + houseHand[0].getSuit());
+    let imageValue = houseHand[0].getLetterValue() + houseHand[0].getSuit()
+    document.getElementById('HCard1').src = "media/" + imageValue + ".png";
 }
 
 
 function printRemainingHouse(){
     for(let i = 1; i < 5; i++){
         let labelTag = 'HCard' + [i+1];
-        document.getElementById(labelTag).innerHTML = (houseHand[i].getLetterValue() + houseHand[i].getSuit());
+        let imageSrc = houseHand[i].getLetterValue() + houseHand[i].getSuit()
+        document.getElementById(labelTag).src = "media/" + imageSrc + ".png";
     }
 }
 
@@ -355,10 +358,10 @@ function deal(){
     initialDisplay();
     printStrength('Player', calculateHandStrength(playerHand));
 
-    document.getElementById('HCard2').innerHTML = "HCard2";
-    document.getElementById('HCard3').innerHTML = "HCard3";
-    document.getElementById('HCard4').innerHTML = "HCard4";
-    document.getElementById('HCard5').innerHTML = "HCard5";
+    document.getElementById('HCard2').src = "media/red_back.png";
+    document.getElementById('HCard3').src = "media/red_back.png";
+    document.getElementById('HCard4').src = "media/red_back.png";
+    document.getElementById('HCard5').src = "media/red_back.png";
     document.getElementById('houseStrength').innerHTML = "House has ?";
     document.getElementById('winner').innerHTML = "Winner?";
     document.getElementById('bet').disabled = false;

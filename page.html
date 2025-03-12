@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Caribbean Stud Poker</title>
     <style>
-
+        button{
+            padding: 10px;
+            margin: 0px;
+        }
     </style>
 </head>
 <body>
@@ -18,7 +21,7 @@
     <!-- Main Content Section -->
     <div class="content">
         <label id="balance"> Balance: </label><br>
-        <label>Enter Bet Amount: </label>
+        <label>Enter Ante Amount: </label>
         <input
             type="text"
             id="betAmount"
@@ -29,7 +32,8 @@
             size="10" />
             <button id = "deal" onclick = deal()> Deal </button><br>
             <button id = "bet" onclick = bet()> Bet </button>
-            <button id = "fold" onclick = fold()> Fold </button><br><br><br>
+            <button id = "fold" onclick = fold()> Fold </button>
+            <button id = "reset" onclick = reset()> Reset </button><br><br>
             <!-- <label id="PCard1">P Card 1</label><br>
             <label id="PCard2">P Card 2</label><br>
             <label id="PCard3">P Card 3</label><br>

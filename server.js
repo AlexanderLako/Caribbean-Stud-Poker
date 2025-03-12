@@ -371,6 +371,9 @@ function deal(){
 
 function bet(){
     betAmount =  ante * 2;
+    totalMoney = totalMoney - betAmount;
+    document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
+    
     document.getElementById('fold').disabled = true;
     document.getElementById('bet').disabled = true;
     document.getElementById('deal').disabled = false;
@@ -392,6 +395,33 @@ function fold(){
 
     printRemainingHouse();
     //calculateWinner();
+}
+
+function reset(){
+
+    totalMoney = 1000;
+    document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
+
+    document.getElementById('fold').disabled = true;
+    document.getElementById('bet').disabled = true;
+    document.getElementById('deal').disabled = false;
+    document.getElementById('betAmount').disabled = false;
+
+    document.getElementById('playerStrength').innerHTML = "Player has ?";
+    document.getElementById('houseStrength').innerHTML = "House has ?";
+    document.getElementById('winner').innerHTML = "Winner?";
+
+    document.getElementById('PCard1').src = "media/red_back.png";
+    document.getElementById('PCard2').src = "media/red_back.png";
+    document.getElementById('PCard3').src = "media/red_back.png";
+    document.getElementById('PCard4').src = "media/red_back.png";
+    document.getElementById('PCard5').src = "media/red_back.png";
+
+    document.getElementById('HCard1').src = "media/red_back.png";
+    document.getElementById('HCard2').src = "media/red_back.png";
+    document.getElementById('HCard3').src = "media/red_back.png";
+    document.getElementById('HCard4').src = "media/red_back.png";
+    document.getElementById('HCard5').src = "media/red_back.png";
 }
 
 

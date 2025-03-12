@@ -2,6 +2,7 @@
 let deck = [];
 let playerHand = [];
 let houseHand = [];
+let ante = 0;
 let betAmount = 0;
 let totalMoney = 1000;
 document.getElementById('balance').innerHTML = ('Balance: $' + totalMoney);
@@ -88,7 +89,7 @@ function shuffleDeck() {
     }
 }
 
-//Give the player and dealer 5 cards from the deck
+//Give the player and house 5 cards from the deck
 function initHands(){
 
     //Sets hands to empty
@@ -302,12 +303,22 @@ function printStrength(name, strength){
 
 //Based on player strength, see who wins
 function calculateWinner(){
-    if(calculateHandStrength(playerHand) > calculateHandStrength(houseHand))
+    if(calculateHandStrength(playerHand) > calculateHandStrength(houseHand)){
         document.getElementById('winner').innerHTML = ("Player Wins!");
-    else if(calculateHandStrength(playerHand) == calculateHandStrength(houseHand))
+        totalMoney = totalMoney + ante + betAmount;
+        document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
+    }
+    else if(calculateHandStrength(playerHand) == calculateHandStrength(houseHand)){
         document.getElementById('winner').innerHTML = ("Its a tie!");
-    else if(calculateHandStrength(playerHand) < calculateHandStrength(houseHand))
-        document.getElementById('winner').innerHTML = ("Dealer Wins!");
+        totalMoney = totalMoney + ante + betAmount;
+        document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
+    }
+        
+    else if(calculateHandStrength(playerHand) < calculateHandStrength(houseHand)){
+        document.getElementById('winner').innerHTML = ("House Wins!");
+        document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
+    }
+    betAmount = 0;
 }
 
 function initialDisplay(){
@@ -327,6 +338,18 @@ function printRemainingHouse(){
 }
 
 function deal(){
+
+    ante = parseInt(document.getElementById('betAmount').value);
+
+    if(ante <= 0 || ante*3 > totalMoney){
+        alert("Bet amount not valid");
+        return;
+    }
+
+    totalMoney = totalMoney - ante;
+    document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
+    document.getElementById('betAmount').disabled = true;
+
     initDeck();
     initHands();
     initialDisplay();
@@ -336,15 +359,19 @@ function deal(){
     document.getElementById('HCard3').innerHTML = "HCard3";
     document.getElementById('HCard4').innerHTML = "HCard4";
     document.getElementById('HCard5').innerHTML = "HCard5";
+    document.getElementById('houseStrength').innerHTML = "House has ?";
+    document.getElementById('winner').innerHTML = "Winner?";
     document.getElementById('bet').disabled = false;
     document.getElementById('fold').disabled = false;
     document.getElementById('deal').disabled = true;
 }
 
 function bet(){
+    betAmount =  ante * 2;
     document.getElementById('fold').disabled = true;
     document.getElementById('bet').disabled = true;
     document.getElementById('deal').disabled = false;
+    document.getElementById('betAmount').disabled = false;
 
     printStrength('House', calculateHandStrength(houseHand));
 
@@ -356,11 +383,12 @@ function fold(){
     document.getElementById('fold').disabled = true;
     document.getElementById('bet').disabled = true;
     document.getElementById('deal').disabled = false;
+    document.getElementById('betAmount').disabled = false;
 
     printStrength('House', calculateHandStrength(houseHand));
 
     printRemainingHouse();
-    calculateWinner();
+    //calculateWinner();
 }
 
 

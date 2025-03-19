@@ -320,11 +320,26 @@ function printStrength(name, strength){
 
 //Based on player strength, see who wins
 function calculateWinner(){
-    console.log("Player strength: " + calculateHandStrength(playerHand));
-    console.log("House strength: " + calculateHandStrength(houseHand));
+
+    let payout = 0;
+
     if(calculateHandStrength(playerHand) > calculateHandStrength(houseHand)){
-        document.getElementById('winner').innerHTML = ("Player Wins!");
-        totalMoney = totalMoney + (ante + betAmount)*2;
+        let winAmount = 0;
+
+        if(calculateHandStrength(houseHand) > 12){
+            payout = payoffAmount(calculateHandStrength(playerHand));
+            winAmount = (ante*2) + betAmount + (betAmount*payout);
+            totalMoney = totalMoney + winAmount;
+            document.getElementById('winner').innerHTML = ("Player Wins! House qualfied");
+
+        }
+        else{
+            winAmount = (ante*2);
+            totalMoney = totalMoney + winAmount;
+            document.getElementById('winner').innerHTML = ("Player Wins! House did NOT qualify");
+        }
+        
+        
         document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
     }
     else if(calculateHandStrength(playerHand) == calculateHandStrength(houseHand)){
@@ -338,6 +353,29 @@ function calculateWinner(){
         document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
     }
     betAmount = 0;
+}
+
+function payoffAmount(strength){
+    if(strength == 143)
+        return 100;
+    else if (strength >= 127 && strength <= 142)
+        return 50;
+    else if (strength >= 111 && strength <= 126)
+        return 20;
+    else if (strength >= 95 && strength <= 110)
+        return 7;
+    else if (strength >= 79 && strength <= 94)
+        return 5;
+    else if (strength >= 63 && strength <= 78)
+        return 4;
+    else if(strength >= 47 && strength <= 62)
+        return 3;
+    else if (strength >= 31 && strength <= 46)
+        return 2;
+    else if(strength >= 15 && strength <= 30)
+        return 1;
+    else
+        return 1;
 }
 
 function initialDisplay(){
@@ -360,7 +398,7 @@ function printRemainingHouse(){
 }
 
 function deal(){
-    
+
     ante = parseInt(document.getElementById('betAmount').value);
 
     if(ante <= 0 || ante*3 > totalMoney){

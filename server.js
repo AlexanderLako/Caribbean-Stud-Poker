@@ -135,15 +135,15 @@ function calculateHandStrength(hand){
         }
 
     //Returns the strength by checking if the cards create a poker hand
-    if(isRoyalFlush(dict)) return 23;
-    else if(isStraightFlush(dict)) return 22;
-    else if(isQuads(dict)) return 21;
-    else if(isFullHouse(dict)) return 20;
-    else if(isFlush(dict)) return 19;
-    else if(isStraight(dict)) return 18;
-    else if(isThreeKind(dict)) return 17; 
-    else if(isTwoPair(dict)) return 16;
-    else if(isPair(dict)) return 15;  
+    if(isRoyalFlush(dict)) return 133; //                        143
+    else if(isStraightFlush(dict)) return isStraightFlush(dict); //Highest Card    127 - 142 (125)
+    else if(isQuads(dict)) return isQuads(dict); //Highest card            111 - 126 (109)
+    else if(isFullHouse(dict)) return isFullHouse(dict); //highest triple      95 - 110 (93)
+    else if(isFlush(dict)) return isFlush(dict); //Highest card            79 - 94 (77)
+    else if(isStraight(dict)) return isStraight(dict); //Highest card         63 - 78 (61)
+    else if(isThreeKind(dict)) return isThreeKind(dict); //highest card        47 - 62 (45)
+    else if(isTwoPair(dict)) return isTwoPair(dict); //highest pair          31-46 (29)
+    else if(isPair(dict) != 0) return isPair(dict); //highest pair           15-30 (13)
     else{
         //Return the highest card as its strength
         if(Object.keys(dict)[0] == 1){return 14;}
@@ -171,27 +171,36 @@ function calculateHandStrength(hand){
 
 //Check that cards are 10,J,Q,K,A all of the same suit
 function isRoyalFlush(dict){
-    return (Object.keys(dict)[4] == 13 && 
+    if (Object.keys(dict)[4] == 13 && 
     Object.keys(dict)[3] == 12 && 
     Object.keys(dict)[2] == 11 && 
     Object.keys(dict)[1] == 10 && 
     Object.keys(dict)[0] == 1 &&
-    isFlush(dict));
+    isFlush(dict)){
+        return 143;
+    }
+    return 0;
 }
 
 //If cards are both straight and flush, then we have straight flush
 function isStraightFlush(dict){
-    return (isFlush(dict) && isStraight(dict));
+    if(isFlush(dict) != 0 && isStraight(dict) != 0)
+        return ((parseInt(isStraight(dict))-61)+125);
+
+    return 0;
 }
 
 //Check to see if we got 4 cards of the same value
 function isQuads(dict){
     for(let i = Object.keys(dict).length-4; i > 0; i--){
         if(dict[Object.keys(dict)[i-1]] == 4){
-            return true;
+            if(Object.keys(dict)[i-1] == 1){
+                return (14 + 109);
+            }
+            return (parseInt(Object.keys(dict)[i-1]) + 109);
         }
     }
-    return false;
+    return 0;
 }
 
 //Check to see if we have both three of a kind and a pair
@@ -211,7 +220,12 @@ function isFullHouse(dict){
 
 //Check to see if all cards are of the same suit
 function isFlush(dict){
-    return (dict["Hearts"] == 5 || dict["Diamonds"] == 5 || dict["Spades"] == 5 || dict["Clubs"] == 5);
+    if(dict["Hearts"] == 5 || dict["Diamonds"] == 5 || dict["Spades"] == 5 || dict["Clubs"] == 5){
+        if(Object.keys(dict)[0] == 1)
+            return 14 + 77;
+        return ((parseInt(Object.keys(dict)[Object.keys(dict).length-5]))+77);
+    }
+    return 0;
 }
 
 //Check and see if we have a straight
@@ -223,89 +237,94 @@ function isStraight(dict){
     Object.keys(dict)[2] == 11 && 
     Object.keys(dict)[1] == 10 && 
     Object.keys(dict)[0] == 1){
-        return true;
+        return 14 + 61;
     }
 
     for(let i = 0; i < 4; i++){
         if(parseInt(Object.keys(dict)[i])+1 != parseInt(Object.keys(dict)[i+1])){
-            return false;
+            return 0;
         }
     }
-    return true;
+    return ((parseInt(Object.keys(dict)[Object.keys(dict).length-5]))+61);
 }
 
 //Check to see if we have 3 cards of the same value
 function isThreeKind(dict){
     for(let i = Object.keys(dict).length-4; i > 0; i--){
         if(dict[Object.keys(dict)[i-1]] == 3){
-            return true;
+            if(Object.keys(dict)[i-1] == 1){
+                return (parseInt(Object.keys(dict)[i-1]) + 13 + 45);
+            }
+            return (parseInt(Object.keys(dict)[i-1]) + 45);
         }
     }
-    return false;
+    return 0;
 }
 
 //Check and see if we have two pairs
 function isTwoPair(dict){
     let pairCounter = 0;
+    let highestPairValue = 0;
     for(let i = Object.keys(dict).length-4; i > 0; i--){
         if(dict[Object.keys(dict)[i-1]] == 2){
             pairCounter++;
+            if(Object.keys(dict)[i-1] == 1){
+                highestPairValue = 14;
+            }
+            if(Object.keys(dict)[i-1] >= highestPairValue)
+                highestPairValue = (parseInt(Object.keys(dict)[i-1]));
         }
     }
-    return (pairCounter == 2);
+    if(pairCounter == 2){
+        return (highestPairValue + 29);
+    }
+    return 0;
 }
 
 //Check to see if we have a pair
 function isPair(dict){
     for(let i = Object.keys(dict).length-4; i > 0; i--){
         if(dict[Object.keys(dict)[i-1]] == 2){
-            return true;
+            if(Object.keys(dict)[i-1] == 1){
+                return (parseInt(Object.keys(dict)[i-1]) + 13 + 13);
+            }
+            return (parseInt(Object.keys(dict)[i-1]) + 13);
         }
     }
-    return false;
+    return 0;
 }
 
 function printStrength(name, strength){
     let elementId = name.toLowerCase() + 'Strength';
-    switch(strength){
-        case 23:
+        if(strength == 143)
             document.getElementById(elementId).innerHTML = (name + " has a Royal Flush!");
-            break;
-        case 22:
-            document.getElementById(elementId).innerHTML = (name + " has a Straight Flush!");
-            break;
-        case 21:
-            document.getElementById(elementId).innerHTML = (name + " has Quads!");
-            break;
-        case 20:
-            document.getElementById(elementId).innerHTML = (name + " has a Full House!");
-            break;
-        case 19:
-            document.getElementById(elementId).innerHTML = (name + " has a Flush!");
-            break;
-        case 18:
-            document.getElementById(elementId).innerHTML = (name + " has a Straight!");
-            break;
-        case 17:
-            document.getElementById(elementId).innerHTML = (name + " has Three of a kind!");
-            break;
-        case 16:
-            document.getElementById(elementId).innerHTML = (name + " has Two Pair!");
-            break;
-        case 15:
-            document.getElementById(elementId).innerHTML = (name + " has a Pair!");
-            break;
-        default:
-            document.getElementById(elementId).innerHTML = (name + " has a High Card: " + strength);
-            break;
-    }
+        else if (strength >= 127 && strength <= 142)
+            document.getElementById(elementId).innerHTML = (name + " has a Straight Flush! High card: " + (parseInt(strength)-125));
+        else if (strength >= 111 && strength <= 126)
+            document.getElementById(elementId).innerHTML = (name + " has Quads! 4 of: " + (parseInt(strength)-109));
+        else if (strength >= 95 && strength <= 110)
+            document.getElementById(elementId).innerHTML = (name + " has a Full House! Triple: " + (parseInt(strength)-93));
+        else if (strength >= 79 && strength <= 94)
+            document.getElementById(elementId).innerHTML = (name + " has a Flush! Highest card: " + (parseInt(strength)-77));
+        else if (strength >= 63 && strength <= 78)
+            document.getElementById(elementId).innerHTML = (name + " has a Straight! Highest card: " + (parseInt(strength)-61));
+        else if(strength >= 47 && strength <= 62)
+            document.getElementById(elementId).innerHTML = (name + " has Three of a kind! Triple: " + (parseInt(strength)-45));
+        else if (strength >= 31 && strength <= 46)
+            document.getElementById(elementId).innerHTML = (name + " has Two Pair! Highest pair: " + (parseInt(strength)-29));
+        else if(strength >= 15 && strength <= 30)
+            document.getElementById(elementId).innerHTML = (name + " has a Pair of " + (parseInt(strength)-13));
+        else
+            document.getElementById(elementId).innerHTML = (name + " has High Card: " + strength);
 }
 
 //Based on player strength, see who wins
 function calculateWinner(){
+    console.log("Player strength: " + calculateHandStrength(playerHand));
+    console.log("House strength: " + calculateHandStrength(houseHand));
     if(calculateHandStrength(playerHand) > calculateHandStrength(houseHand)){
         document.getElementById('winner').innerHTML = ("Player Wins!");
-        totalMoney = totalMoney + ante + betAmount;
+        totalMoney = totalMoney + (ante + betAmount)*2;
         document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
     }
     else if(calculateHandStrength(playerHand) == calculateHandStrength(houseHand)){
@@ -341,7 +360,7 @@ function printRemainingHouse(){
 }
 
 function deal(){
-
+    
     ante = parseInt(document.getElementById('betAmount').value);
 
     if(ante <= 0 || ante*3 > totalMoney){
@@ -373,7 +392,7 @@ function bet(){
     betAmount =  ante * 2;
     totalMoney = totalMoney - betAmount;
     document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
-    
+
     document.getElementById('fold').disabled = true;
     document.getElementById('bet').disabled = true;
     document.getElementById('deal').disabled = false;

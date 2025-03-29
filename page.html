@@ -9,6 +9,55 @@
             padding: 10px;
             margin: 0px;
         }
+
+        #misc{
+            -o-transition: all 1s ease-in-out;
+            -webkit-transition: all 1s ease-in-out;
+            -ms-transition: all 1s ease-in-out;
+
+            -o-transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+            -ms-transform-style: preserve-3d;
+
+            margin: 50px auto;
+        }
+
+        .flipCard {
+            width: 100px;
+            height: 160px;
+            text-align: center;
+            transition: 0.6s ease-in-out;
+            transform-style: preserve-3d;
+            display: inline-block;
+            position: relative;
+            
+          }
+          
+          .flip {
+            width: 100px;
+            height: 160px;
+            text-align: center;
+            position: relative;
+            display: inline-block;
+            transition: 0.6s ease-in-out;
+            transform-style: preserve-3d;
+            transform: rotateY(180deg);
+          }
+          
+          .flip-card-front, .flip-card-back {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+          }
+          
+          .flip-card-front {
+            position: absolute;
+          }
+          
+          .flip-card-back {
+            transform: rotateY(180deg);
+          }
     </style>
 </head>
 <body>
@@ -20,7 +69,7 @@
 
     <!-- Main Content Section -->
     <div class="content">
-        <label id="balance"> Balance: </label><br>
+        <label id="balance" style="font-size:30px"> Balance: </label><br>
         <label>Enter Ante Amount: </label>
         <input
             type="text"
@@ -34,35 +83,65 @@
             <button id = "bet" onclick = bet()> Bet </button>
             <button id = "fold" onclick = fold()> Fold </button>
             <button id = "reset" onclick = reset()> Reset </button><br><br>
-            <!-- <label id="PCard1">P Card 1</label><br>
-            <label id="PCard2">P Card 2</label><br>
-            <label id="PCard3">P Card 3</label><br>
-            <label id="PCard4">P Card 4</label><br>
-            <label id="PCard5">P Card 5</label> <br> -->
 
-            <img id = "PCard1" src = "media/red_back.png" style="width:100px;height:160px;">
-            <img id = "PCard2" src = "media/red_back.png" style="width:100px;height:160px;">
-            <img id = "PCard3" src = "media/red_back.png" style="width:100px;height:160px;">
-            <img id = "PCard4" src = "media/red_back.png" style="width:100px;height:160px;">
-            <img id = "PCard5" src = "media/red_back.png" style="width:100px;height:160px;">
+            <div class="flipCard">
+                <img class = "flip-card-front" id = "flipCard1" src = "media/red_back.png" style="width:100px;height:160px;">
+                <img class = "flip-card-back" id = "PCard1" src = "media/blue_back.png" style="width:100px;height:160px;">
+            </div>
 
-            <label id="playerStrength">Player strength</label>
+            <div class="flipCard">
+                <img class = "flip-card-front" id = "flipCard2" src = "media/red_back.png" style="width:100px;height:160px;">
+                <img class = "flip-card-back" id = "PCard2" src = "media/blue_back.png" style="width:100px;height:160px;">
+            </div>
+
+            <div class="flipCard">
+                <img class = "flip-card-front" id = "flipCard3" src = "media/red_back.png" style="width:100px;height:160px;">
+                <img class = "flip-card-back" id = "PCard3" src = "media/blue_back.png" style="width:100px;height:160px;">
+            </div>
+
+            <div class="flipCard">
+                <img class = "flip-card-front" id = "flipCard4" src = "media/red_back.png" style="width:100px;height:160px;">
+                <img class = "flip-card-back" id = "PCard4" src = "media/blue_back.png" style="width:100px;height:160px;">
+            </div>
+
+            <div class="flipCard">
+                <img class = "flip-card-front" id = "flipCard5" src = "media/red_back.png" style="width:100px;height:160px;">
+                <img class = "flip-card-back" id = "PCard5" src = "media/blue_back.png" style="width:100px;height:160px;">
+            </div>
+
+           
+            <label id="playerStrength">Player has ?</label>
             <br><br><br>
 
-            <img id = "HCard1" src = "media/red_back.png" style="width:100px;height:160px;">
-            <img id = "HCard2" src = "media/red_back.png" style="width:100px;height:160px;">
-            <img id = "HCard3" src = "media/red_back.png" style="width:100px;height:160px;">
-            <img id = "HCard4" src = "media/red_back.png" style="width:100px;height:160px;">
-            <img id = "HCard5" src = "media/red_back.png" style="width:100px;height:160px;">
 
-            <!-- <label id="HCard1">H Card 1</label><br>
-            <label id="HCard2">H Card 2</label><br>
-            <label id="HCard3">H Card 3</label><br>
-            <label id="HCard4">H Card 4</label><br>
-            <label id="HCard5">H Card 5</label><br> -->
-            <label id="houseStrength">House strength</label>
+            <div class="flipCard">
+                <img class = "flip-card-front" id = "flipCard6" src = "media/red_back.png" style="width:100px;height:160px;">
+                <img class = "flip-card-back" id = "HCard1" src = "media/blue_back.png" style="width:100px;height:160px;">
+            </div>
+
+            <div class="flipCard">
+                <img class = "flip-card-front" id = "flipCard7" src = "media/red_back.png" style="width:100px;height:160px;">
+                <img class = "flip-card-back" id = "HCard2" src = "media/blue_back.png" style="width:100px;height:160px;">
+            </div>
+
+            <div class="flipCard">
+                <img class = "flip-card-front" id = "flipCard8" src = "media/red_back.png" style="width:100px;height:160px;">
+                <img class = "flip-card-back" id = "HCard3" src = "media/blue_back.png" style="width:100px;height:160px;">
+            </div>
+
+            <div class="flipCard">
+                <img class = "flip-card-front" id = "flipCard9" src = "media/red_back.png" style="width:100px;height:160px;">
+                <img class = "flip-card-back" id = "HCard4" src = "media/blue_back.png" style="width:100px;height:160px;">
+            </div>
+
+            <div class="flipCard">
+                <img class = "flip-card-front" id = "flipCard10" src = "media/red_back.png" style="width:100px;height:160px;">
+                <img class = "flip-card-back" id = "HCard5" src = "media/blue_back.png" style="width:100px;height:160px;">
+            </div>
+
+            <label id="houseStrength">House has ?</label>
             <br><br><br>
-            <label id = "winner"> Winner </label><br>
+            <label id = "winner"> Winner? </label><br>
     </div>
 
     <script src = server.js></script>

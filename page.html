@@ -1,13 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="background-color:green;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Caribbean Stud Poker</title>
     <style>
+
         button{
+            padding: 20px;
+            margin: 5px;
+            font-size: 20px;
+            text-align:center;
+            display:inline-block;
+            border-radius: 10px;
+        }
+
+        .center{
+            background-color:green;
+            text-align:center;
+        }
+
+        .payouts{
+            float: right;
+            font-size: 20px;
+            color: white;
+            margin-right:20px;
             padding: 10px;
-            margin: 0px;
+            position: absolute;
+            /* background-color: grey; */
+        }
+
+        body{
+            font-family: 'Garamond';
         }
 
         #misc{
@@ -63,27 +87,57 @@
 <body>
 
     <header>
-        <h1>Caribbean Stud Poker</h1>
+        <h1 style = "display:block; text-align:center; color:white; font-size:60px; 
+        text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;">Caribbean Stud Poker</h1>
     </header>
 
 
     <!-- Main Content Section -->
     <div class="content">
-        <label id="balance" style="font-size:30px"> Balance: </label><br>
-        <label>Enter Ante Amount: </label>
-        <input
-            type="text"
-            id="betAmount"
-            name="betAmount"
-            required
-            minlength="1"
-            maxlength="8"
-            size="10" />
+
+        <div class="payouts">
+            <label style="font-size: 30px;"> |---- PAYOUTS ----| </label><br><br>
+            <label> Royal Flush ............. 100 to 1</label><br>
+            <label> Straight Flush ............ 50 to 1</label><br>
+            <label> Four of a kind ............ 20 to 1</label><br>
+            <label> Full House ................... 7 to 1</label><br>
+            <label> Flush ............................ 5 to 1</label><br>
+            <label> Straight ........................ 4 to 1</label><br>
+            <label> Three of a kind ............ 3 to 1</label><br>
+            <label> Two Pair ...................... 2 to 1</label><br>
+            <label> All Other ..................... 1 to 1</label><br>
+        </div>
+        
+        
+        <label id="balance" style="font-size:30px; color:white; float:right; text-align:right;"> Balance: </label>
+
+        <div class = "center">
+            
+            <label style="color:white;">Enter Ante Amount: </label>
+        
+            <input
+                type="text"
+                id="betAmount"
+                name="betAmount"
+                required
+                minlength="1"
+                maxlength="8"
+                size="10" />
+                
             <button id = "deal" onclick = deal()> Deal </button><br>
             <button id = "bet" onclick = bet()> Bet </button>
             <button id = "fold" onclick = fold()> Fold </button>
-            <button id = "reset" onclick = reset()> Reset </button><br><br>
+            <button id = "reset" onclick = reset()> RESET </button><br><br>
 
+        </div>
+
+        <label id="playerStrength" style="text-align:center; display:block; color:blue; font-size: 20px;">Player has ?</label>
+
+        <div class = "center">
             <div class="flipCard">
                 <img class = "flip-card-front" id = "flipCard1" src = "media/red_back.png" style="width:100px;height:160px;">
                 <img class = "flip-card-back" id = "PCard1" src = "media/blue_back.png" style="width:100px;height:160px;">
@@ -108,12 +162,13 @@
                 <img class = "flip-card-front" id = "flipCard5" src = "media/red_back.png" style="width:100px;height:160px;">
                 <img class = "flip-card-back" id = "PCard5" src = "media/blue_back.png" style="width:100px;height:160px;">
             </div>
+        </div>
 
-           
-            <label id="playerStrength">Player has ?</label>
-            <br><br><br>
+        
+        <br><br><br>
+        <label id="houseStrength" style="text-align:center; display:block; color:blue; font-size: 20px;">House has ?</label>
 
-
+        <div class = "center">
             <div class="flipCard">
                 <img class = "flip-card-front" id = "flipCard6" src = "media/red_back.png" style="width:100px;height:160px;">
                 <img class = "flip-card-back" id = "HCard1" src = "media/blue_back.png" style="width:100px;height:160px;">
@@ -138,10 +193,15 @@
                 <img class = "flip-card-front" id = "flipCard10" src = "media/red_back.png" style="width:100px;height:160px;">
                 <img class = "flip-card-back" id = "HCard5" src = "media/blue_back.png" style="width:100px;height:160px;">
             </div>
+        </div>
 
-            <label id="houseStrength">House has ?</label>
+            
             <br><br><br>
-            <label id = "winner"> Winner? </label><br>
+            <label id = "winner" style="text-align:center; display:block; color:blue; font-size: 20px;"> Winner? </label><br>
+
+            <footer style = "position: fixed; left: 0; bottom: 0; width: 100%; color: white; text-align: right;">
+                <p  style="padding-right:50px; font-size:20px;"> Created by: Alexander Lako </p>
+            </footer>
     </div>
 
     <script src = server.js></script>

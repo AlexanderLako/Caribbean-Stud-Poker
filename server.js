@@ -299,23 +299,52 @@ function printStrength(name, strength){
         if(strength == 143)
             document.getElementById(elementId).innerHTML = (name + " has a Royal Flush!");
         else if (strength >= 127 && strength <= 142)
-            document.getElementById(elementId).innerHTML = (name + " has a Straight Flush! High card: " + (parseInt(strength)-125));
+            document.getElementById(elementId).innerHTML = (name + " has a Straight Flush! High card: " + printLetters((parseInt(strength)-125)));
         else if (strength >= 111 && strength <= 126)
-            document.getElementById(elementId).innerHTML = (name + " has Quads! 4 of: " + (parseInt(strength)-109));
+            document.getElementById(elementId).innerHTML = (name + " has Quads! 4 of: " + printLetters((parseInt(strength)-109)));
         else if (strength >= 95 && strength <= 110)
-            document.getElementById(elementId).innerHTML = (name + " has a Full House! Triple: " + (parseInt(strength)-93));
+            document.getElementById(elementId).innerHTML = (name + " has a Full House! Triple: " + printLetters((parseInt(strength)-93)));
         else if (strength >= 79 && strength <= 94)
-            document.getElementById(elementId).innerHTML = (name + " has a Flush! Highest card: " + (parseInt(strength)-77));
+            document.getElementById(elementId).innerHTML = (name + " has a Flush! Highest card: " + printLetters((parseInt(strength)-77)));
         else if (strength >= 63 && strength <= 78)
-            document.getElementById(elementId).innerHTML = (name + " has a Straight! Highest card: " + (parseInt(strength)-61));
+            document.getElementById(elementId).innerHTML = (name + " has a Straight! Highest card: " + printLetters((parseInt(strength)-61)));
         else if(strength >= 47 && strength <= 62)
-            document.getElementById(elementId).innerHTML = (name + " has Three of a kind! Triple: " + (parseInt(strength)-45));
+            document.getElementById(elementId).innerHTML = (name + " has Three of a kind! Triple: " + printLetters((parseInt(strength)-45)));
         else if (strength >= 31 && strength <= 46)
-            document.getElementById(elementId).innerHTML = (name + " has Two Pair! Highest pair: " + (parseInt(strength)-29));
+            document.getElementById(elementId).innerHTML = (name + " has Two Pair! Highest pair: " + printLetters((parseInt(strength)-29)));
         else if(strength >= 15 && strength <= 30)
-            document.getElementById(elementId).innerHTML = (name + " has a Pair of " + (parseInt(strength)-13));
+            document.getElementById(elementId).innerHTML = (name + " has a Pair of " + printLetters((parseInt(strength)-13)));
         else
-            document.getElementById(elementId).innerHTML = (name + " has High Card: " + strength);
+            document.getElementById(elementId).innerHTML = (name + " has High Card: " + printLetters(strength));
+}
+
+//Returns 1,11,12,13,14 as A,J,Q,K,A
+function printLetters(num){
+    switch (String(num)){
+        case "1":
+            return "A";
+        case "11":
+            return "J";
+        case "12":
+            return "Q";
+        case "13":
+            return "K";
+        case "14":
+            return "A"
+        default:
+            return num;
+    }
+}
+
+//Check if house has Ace King to qualify
+function houseQualify(hand){
+    foundAce = false;
+    foundKing = false;
+    for(let i = 0; i < 5; i++){
+        if(hand[i].getValue() == 1){foundAce = true;}
+        if(hand[i].getValue() == 13){foundKing = true;}
+    }
+    return (foundAce && foundKing);
 }
 
 //Based on player strength, see who wins
@@ -326,7 +355,7 @@ function calculateWinner(){
     if(calculateHandStrength(playerHand) > calculateHandStrength(houseHand)){
         let winAmount = 0;
 
-        if(calculateHandStrength(houseHand) > 12){
+        if(calculateHandStrength(houseHand) > 14 || houseQualify(houseHand)){
             payout = payoffAmount(calculateHandStrength(playerHand));
             winAmount = ante + (betAmount*payout);
             setTimeout(function(){
@@ -343,7 +372,7 @@ function calculateWinner(){
                 alert("Player won: $" + winAmount);
             }, 1000);
             
-            totalMoney = totalMoney + ante + winAmount;
+            totalMoney = totalMoney + ante + winAmount + betAmount;
             document.getElementById('winner').innerHTML = ("Player Wins! House did NOT qualify");
         }
         
@@ -426,39 +455,38 @@ function deal(){
 
     ante = parseInt(document.getElementById('betAmount').value);
 
-    if(ante <= 0 || ante*3 > totalMoney){
+    if(ante > 0 && ante*3 <= totalMoney){
+        totalMoney = totalMoney - ante;
+        document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
+        document.getElementById('betAmount').disabled = true;
+    
+        initDeck();
+        initHands();
+        initialDisplay();
+        printStrength('Player', calculateHandStrength(playerHand));
+    
+        document.getElementById('HCard2').src = "media/red_back.png";
+        document.getElementById('HCard3').src = "media/red_back.png";
+        document.getElementById('HCard4').src = "media/red_back.png";
+        document.getElementById('HCard5').src = "media/red_back.png";
+        document.getElementById('houseStrength').innerHTML = "House has ?";
+        document.getElementById('winner').innerHTML = "Winner?";
+        document.getElementById('bet').disabled = false;
+        document.getElementById('fold').disabled = false;
+        document.getElementById('deal').disabled = true;
+    
+        let counter = 0;
+    
+        document.querySelectorAll('.flipCard').forEach(card => {
+            if(counter == 6) return;
+            card.classList.toggle('flip');
+            counter++;
+        });
+    }
+    else{
         alert("Bet amount not valid");
         return;
     }
-
-    totalMoney = totalMoney - ante;
-    document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
-    document.getElementById('betAmount').disabled = true;
-
-    initDeck();
-    initHands();
-    initialDisplay();
-    printStrength('Player', calculateHandStrength(playerHand));
-
-    document.getElementById('HCard2').src = "media/red_back.png";
-    document.getElementById('HCard3').src = "media/red_back.png";
-    document.getElementById('HCard4').src = "media/red_back.png";
-    document.getElementById('HCard5').src = "media/red_back.png";
-    document.getElementById('houseStrength').innerHTML = "House has ?";
-    document.getElementById('winner').innerHTML = "Winner?";
-    document.getElementById('bet').disabled = false;
-    document.getElementById('fold').disabled = false;
-    document.getElementById('deal').disabled = true;
-
-    let counter = 0;
-
-    document.querySelectorAll('.flipCard').forEach(card => {
-        if(counter == 6) return;
-        card.classList.toggle('flip');
-        counter++;
-    });
-
-    
 }
 
 function bet(){

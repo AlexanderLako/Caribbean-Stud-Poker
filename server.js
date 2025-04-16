@@ -359,17 +359,17 @@ function calculateWinner(){
             payout = payoffAmount(calculateHandStrength(playerHand));
             winAmount = ante + (betAmount*payout);
             setTimeout(function(){
-                alert("Player won: $" + winAmount);
+                alert("Player won: $" + winAmount + "\n\n" + document.getElementById('playerStrength').innerHTML + "\n" + document.getElementById('houseStrength').innerHTML);
             }, 1000);
             
             totalMoney = totalMoney + ante + betAmount+ winAmount;
-            document.getElementById('winner').innerHTML = ("Player Wins! House qualfied");
+            document.getElementById('winner').innerHTML = ("Player Wins! House qualified");
 
         }
         else{
             winAmount = ante;
             setTimeout(function(){
-                alert("Player won: $" + winAmount);
+                alert("Player won: $" + winAmount + "\n\n" + document.getElementById('playerStrength').innerHTML + "\n" + document.getElementById('houseStrength').innerHTML);
             }, 1000);
             
             totalMoney = totalMoney + ante + winAmount + betAmount;
@@ -384,7 +384,7 @@ function calculateWinner(){
         totalMoney = totalMoney + ante + betAmount;
         document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
         setTimeout(function(){
-            alert("Tie!");
+            alert("Tie!" + "\n\n" + document.getElementById('playerStrength').innerHTML + "\n" + document.getElementById('houseStrength').innerHTML);
         }, 1000);
         
     }
@@ -393,7 +393,7 @@ function calculateWinner(){
         document.getElementById('winner').innerHTML = ("House Wins!");
         document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
         setTimeout(function(){
-            alert("House wins!");
+            alert("House wins!" + "\n\n" + document.getElementById('playerStrength').innerHTML + "\n" + document.getElementById('houseStrength').innerHTML);
         }, 1000);
         
     }
@@ -455,6 +455,8 @@ function deal(){
 
     ante = parseInt(document.getElementById('betAmount').value);
 
+    document.getElementById('player').play();
+
     if(ante > 0 && ante*3 <= totalMoney){
         totalMoney = totalMoney - ante;
         document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
@@ -490,14 +492,15 @@ function deal(){
 }
 
 function bet(){
-    betAmount =  ante * 2;
-    totalMoney = totalMoney - betAmount;
-    document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
 
     document.getElementById('fold').disabled = true;
     document.getElementById('bet').disabled = true;
-    document.getElementById('deal').disabled = false;
-    document.getElementById('betAmount').disabled = false;
+    document.getElementById('deal').disabled = true;
+    document.getElementById('betAmount').disabled = true;
+
+    betAmount =  ante * 2;
+    totalMoney = totalMoney - betAmount;
+    document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
 
     printStrength('House', calculateHandStrength(houseHand));
     printRemainingHouse();
@@ -510,22 +513,27 @@ function bet(){
         document.getElementById('playerStrength').innerHTML = "Player has ?";
         document.getElementById('houseStrength').innerHTML = "House has ?";
         document.getElementById('winner').innerHTML = "Winner?";
+
+        document.getElementById('fold').disabled = true;
+        document.getElementById('bet').disabled = true;
+        document.getElementById('deal').disabled = false;
+        document.getElementById('betAmount').disabled = false;
     }, 2000);
-    
 }
 
 function fold(){
+
     document.getElementById('fold').disabled = true;
     document.getElementById('bet').disabled = true;
-    document.getElementById('deal').disabled = false;
-    document.getElementById('betAmount').disabled = false;
+    document.getElementById('deal').disabled = true;
+    document.getElementById('betAmount').disabled = true;
 
     printStrength('House', calculateHandStrength(houseHand));
 
     printRemainingHouse();
 
     setTimeout(function() {
-        alert("Folded");
+        alert("Folded" + "\n\n" + document.getElementById('playerStrength').innerHTML + "\n" + document.getElementById('houseStrength').innerHTML);
     }, 2000);
 
     setTimeout(function() {
@@ -535,9 +543,15 @@ function fold(){
         document.getElementById('playerStrength').innerHTML = "Player has ?";
         document.getElementById('houseStrength').innerHTML = "House has ?";
         document.getElementById('winner').innerHTML = "Winner?";
+
+        document.getElementById('fold').disabled = true;
+        document.getElementById('bet').disabled = true;
+        document.getElementById('deal').disabled = false;
+        document.getElementById('betAmount').disabled = false;
+
     }, 2000);
-    
-    
+
+    document.getElementById('winner').innerHTML = "Folded";
 }
 
 function reset(){

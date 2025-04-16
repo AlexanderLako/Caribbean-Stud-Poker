@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="background-color:green;">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,22 +11,21 @@
             margin: 5px;
             font-size: 25px;
             text-align:center;
-            /*display:inline-block;*/
             border-radius: 10px;
         }
 
         .center{
-            background-color:green;
             text-align:center;
         }
 
         body{
+            background: url("/media/gameBackground.jpg");
+            background-size: 100%;
             font-family: 'Garamond';
         }
 
         .column {
             float: left;
-            /*padding: 10px;*/
           }
           
           .left, .right {
@@ -39,13 +38,6 @@
           .middle {
             width: 50%;
           }
-          
-          /* Clear floats after the columns 
-          .row:after {
-            content: "";
-            display: table;
-            clear: both;
-          } */
 
         #misc{
             -o-transition: all 1s ease-in-out;
@@ -100,7 +92,7 @@
 <body>
 
     <header>
-        <h1 style = "display:block; text-align:center; color:white; border-bottom:5px dotted black; margin:10px; font-size:60px; 
+        <h1 style = "display:block; text-align:center; color:white; border-bottom:5px dotted gold; margin:10px; font-size:60px; 
         text-shadow:
         -1px -1px 0 #000,
         1px -1px 0 #000,
@@ -138,7 +130,7 @@
 
             <div class = "column middle">
                 
-                <label id="playerStrength" style="text-align:center; display:block; font-size: 40px;">Player has ?</label><br>
+                <label id="playerStrength" style="text-align:center; display:block; font-size: 40px; color:gold;">Player has ?</label><br>
     
                 <div class = "center">
 
@@ -169,7 +161,7 @@
                 </div>
     
                 <br><br><br>
-                <label id="houseStrength" style="text-align:center; display:block; font-size: 40px;">House has ?</label><br>
+                <label id="houseStrength" style="text-align:center; display:block; font-size: 40px; color: gold;">House has ?</label><br>
         
                 <div class = "center">
                     <div class="flipCard">
@@ -199,7 +191,7 @@
                 </div>
     
                 <br><br><br>
-                <label id = "winner" style="text-align:center; display:block; font-size: 50px;"> Winner? </label><br>
+                <label id = "winner" style="text-align:center; display:block; font-size: 50px; color:gold;"> Winner? </label><br>
 
             </div>
 

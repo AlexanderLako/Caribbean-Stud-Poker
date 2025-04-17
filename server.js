@@ -135,7 +135,7 @@ function calculateHandStrength(hand){
         }
 
     //Returns the strength by checking if the cards create a poker hand
-    if(isRoyalFlush(dict)) return 133; //                        143
+    if(isRoyalFlush(dict)) return 143; //                        143
     else if(isStraightFlush(dict)) return isStraightFlush(dict); //Highest Card    127 - 142 (125)
     else if(isQuads(dict)) return isQuads(dict); //Highest card            111 - 126 (109)
     else if(isFullHouse(dict)) return isFullHouse(dict); //highest triple      95 - 110 (93)
@@ -149,24 +149,6 @@ function calculateHandStrength(hand){
         if(Object.keys(dict)[0] == 1){return 14;}
         else{return Object.keys(dict)[Object.keys(dict).length-5];}
     }
-        // let dict = new Map();
-        // dict.set('Heart', 0);
-        // dict.set('Diamond', 0);
-        // dict.set('Spade', 0);
-        // dict.set('Club', 0);
-
-
-        // if (dict.get('two') == undefined){
-        //     dict.set('two', 2);
-        // }
-
-        // dict.set('two', dict.get("two")+1)
-
-        // console.log(dict.get('two'));
-
-        // for(var key in dict){
-        //     console.log(key);
-        // }
 }
 
 //Check that cards are 10,J,Q,K,A all of the same suit
@@ -294,6 +276,7 @@ function isPair(dict){
     return 0;
 }
 
+//Print house/player strength on the screen
 function printStrength(name, strength){
     let elementId = name.toLowerCase() + 'Strength';
         if(strength == 143)
@@ -336,7 +319,7 @@ function printLetters(num){
     }
 }
 
-//Check if house has Ace King to qualify
+//Check if house has Ace & King to qualify
 function houseQualify(hand){
     foundAce = false;
     foundKing = false;
@@ -352,20 +335,26 @@ function calculateWinner(){
 
     let payout = 0;
 
+    //If player hand is stronger than house hand, see if house qualified and increase balance
     if(calculateHandStrength(playerHand) > calculateHandStrength(houseHand)){
         let winAmount = 0;
 
+        //If house has greater than Ace King or equal to ace king, then house qualified
         if(calculateHandStrength(houseHand) > 14 || houseQualify(houseHand)){
             payout = payoffAmount(calculateHandStrength(playerHand));
             winAmount = ante + (betAmount*payout);
+            
+            //Alert the user that they have won and what player/house had
             setTimeout(function(){
                 alert("Player won: $" + winAmount + "\n\n" + document.getElementById('playerStrength').innerHTML + "\n" + document.getElementById('houseStrength').innerHTML);
             }, 1000);
             
+            //Update total money
             totalMoney = totalMoney + ante + betAmount+ winAmount;
             document.getElementById('winner').innerHTML = ("Player Wins! House qualified");
 
         }
+        //If house didnt qualify, player only wins the ante and bet amount it pushed
         else{
             winAmount = ante;
             setTimeout(function(){
@@ -375,23 +364,25 @@ function calculateWinner(){
             totalMoney = totalMoney + ante + winAmount + betAmount;
             document.getElementById('winner').innerHTML = ("Player Wins! House did NOT qualify");
         }
-        
-        
+        //Update balance
         document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
     }
+    //If the player hand is equal to the house hand then they tie
     else if(calculateHandStrength(playerHand) == calculateHandStrength(houseHand)){
         document.getElementById('winner').innerHTML = ("Its a tie!");
         totalMoney = totalMoney + ante + betAmount;
         document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
+        //Alert user that they have tied and show hands
         setTimeout(function(){
             alert("Tie!" + "\n\n" + document.getElementById('playerStrength').innerHTML + "\n" + document.getElementById('houseStrength').innerHTML);
         }, 1000);
         
-    }
-        
+    } 
+    //If players hand is weaker than house hand then they have lost 
     else if(calculateHandStrength(playerHand) < calculateHandStrength(houseHand)){
         document.getElementById('winner').innerHTML = ("House Wins!");
         document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
+        //Alert user that they have lost
         setTimeout(function(){
             alert("House wins!" + "\n\n" + document.getElementById('playerStrength').innerHTML + "\n" + document.getElementById('houseStrength').innerHTML);
         }, 1000);
@@ -400,6 +391,7 @@ function calculateWinner(){
     betAmount = 0;
 }
 
+//Return payoff amount based on the players strength
 function payoffAmount(strength){
     if(strength == 143)
         return 100;
@@ -423,18 +415,22 @@ function payoffAmount(strength){
         return 1;
 }
 
+//Show players cards and first card of house using value & suit in media folder
 function initialDisplay(){
+    //Show all 5 player cards
     for(let i = 0; i < 5; i++){
         let labelTag = 'PCard' + [i+1];
         let imageVal = playerHand[i].getLetterValue() + playerHand[i].getSuit()
         document.getElementById(labelTag).src = "media/" + imageVal + ".png";
     } 
+    //Show house first card
     let imageValue = houseHand[0].getLetterValue() + houseHand[0].getSuit()
     document.getElementById('HCard1').src = "media/" + imageValue + ".png";
 }
 
-
+//Flip the remaining house cards
 function printRemainingHouse(){
+    //Show the house cards 2-5
     for(let i = 1; i < 5; i++){
         let labelTag = 'HCard' + [i+1];
         let imageSrc = houseHand[i].getLetterValue() + houseHand[i].getSuit();
@@ -443,6 +439,7 @@ function printRemainingHouse(){
 
     let flipCounter = 0;
 
+    //Flip remaining house cards (6-10)
     document.querySelectorAll('.flipCard').forEach(card => {
         if(flipCounter >= 6){
             card.classList.toggle('flip');
@@ -451,34 +448,42 @@ function printRemainingHouse(){
     });
 }
 
+//Deal function activate when button is pressed. Parses ante amount, flips cards, disables other buttons, init funcitons
 function deal(){
 
+    //Get ante amount
     ante = parseInt(document.getElementById('betAmount').value);
 
+    //Play music
     document.getElementById('player').play();
 
+    //Check to see if the ante is allowed
     if(ante > 0 && ante*3 <= totalMoney){
         totalMoney = totalMoney - ante;
         document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
         document.getElementById('betAmount').disabled = true;
     
+        //Init functions to get started
         initDeck();
         initHands();
         initialDisplay();
         printStrength('Player', calculateHandStrength(playerHand));
     
+        //Make sure house cards 2-5 arent showing
         document.getElementById('HCard2').src = "media/red_back.png";
         document.getElementById('HCard3').src = "media/red_back.png";
         document.getElementById('HCard4').src = "media/red_back.png";
         document.getElementById('HCard5').src = "media/red_back.png";
         document.getElementById('houseStrength').innerHTML = "House has ?";
         document.getElementById('winner').innerHTML = "Winner?";
+        //Enable other buttons and disable this one
         document.getElementById('bet').disabled = false;
         document.getElementById('fold').disabled = false;
         document.getElementById('deal').disabled = true;
     
         let counter = 0;
     
+        //Flip first 6 cards
         document.querySelectorAll('.flipCard').forEach(card => {
             if(counter == 6) return;
             card.classList.toggle('flip');
@@ -486,34 +491,42 @@ function deal(){
         });
     }
     else{
+        //Tell the user that the bet is not valid
         alert("Bet amount not valid");
         return;
     }
 }
 
+//Bet function takes the users ante*2, disables buttons, prints the house strength, then calls calculate winner
 function bet(){
 
+    //Disable buttons
     document.getElementById('fold').disabled = true;
     document.getElementById('bet').disabled = true;
     document.getElementById('deal').disabled = true;
     document.getElementById('betAmount').disabled = true;
 
+    //Bet amount is now ante*2
     betAmount =  ante * 2;
     totalMoney = totalMoney - betAmount;
     document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
 
+    //Print house strength and show remaining cards, then calculate winner
     printStrength('House', calculateHandStrength(houseHand));
     printRemainingHouse();
     calculateWinner();
 
+    //Flip the cards to face down
     setTimeout(function() {
         document.querySelectorAll('.flipCard').forEach(card => {
             card.classList.toggle('flip');
         });
+        //Reset the strengths
         document.getElementById('playerStrength').innerHTML = "Player has ?";
         document.getElementById('houseStrength').innerHTML = "House has ?";
         document.getElementById('winner').innerHTML = "Winner?";
 
+        //Disable buttons
         document.getElementById('fold').disabled = true;
         document.getElementById('bet').disabled = true;
         document.getElementById('deal').disabled = false;
@@ -521,29 +534,37 @@ function bet(){
     }, 2000);
 }
 
+//Fold funcitons is called from the fold button. Flips cards back, alert the user that they have folded
 function fold(){
 
+    //Disable buttons
     document.getElementById('fold').disabled = true;
     document.getElementById('bet').disabled = true;
     document.getElementById('deal').disabled = true;
     document.getElementById('betAmount').disabled = true;
 
+    //Print house strength
     printStrength('House', calculateHandStrength(houseHand));
 
+    //Show remaining house cards
     printRemainingHouse();
 
+    //Alert the user that they have folded
     setTimeout(function() {
         alert("Folded" + "\n\n" + document.getElementById('playerStrength').innerHTML + "\n" + document.getElementById('houseStrength').innerHTML);
     }, 2000);
 
+    //Flip the cards back
     setTimeout(function() {
         document.querySelectorAll('.flipCard').forEach(card => {
             card.classList.toggle('flip');
         });
+        //Reset strengths
         document.getElementById('playerStrength').innerHTML = "Player has ?";
         document.getElementById('houseStrength').innerHTML = "House has ?";
         document.getElementById('winner').innerHTML = "Winner?";
 
+        //Disable buttons besides deal and bet amount
         document.getElementById('fold').disabled = true;
         document.getElementById('bet').disabled = true;
         document.getElementById('deal').disabled = false;
@@ -554,16 +575,20 @@ function fold(){
     document.getElementById('winner').innerHTML = "Folded";
 }
 
+//Reset money back to 1000, reset game as if it had just restarted
 function reset(){
 
+    //Update the balance
     totalMoney = 1000;
     document.getElementById('balance').innerHTML = "Balance: $" + totalMoney;
 
+    //Reset buttons to original state
     document.getElementById('fold').disabled = true;
     document.getElementById('bet').disabled = true;
     document.getElementById('deal').disabled = false;
     document.getElementById('betAmount').disabled = false;
 
+    //Resets strengths
     document.getElementById('playerStrength').innerHTML = "Player has ?";
     document.getElementById('houseStrength').innerHTML = "House has ?";
     document.getElementById('winner').innerHTML = "Winner?";
